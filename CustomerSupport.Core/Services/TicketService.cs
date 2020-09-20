@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using Microsoft.EntityFrameworkCore;
+
 using CustomerSupport.EntityFramework.Entities;
 using CustomerSupport.Core.Models;
 using CustomerSupport.Core.BusinessLogic;
@@ -25,78 +27,79 @@ namespace CustomerSupport.Core.Services
 
     public class TicketService : ITicketService
     {
+        private readonly CustomerSupportContext _db;
+        
+        public TicketService(CustomerSupportContext db) => _db = db;
+
         public void Create(CreateTicketDto ticketDto)
         {
-            ITicket ticket = new BusinessLogic.Ticket(ticketDto);
+            ITicket ticket = new BusinessLogic.Ticket(ticketDto, _db);
             ticket.Create();
         }
 
         public void Delete(long id)
         {
-            BusinessLogic.Ticket.Delete(id);
+            var ticket = _db.Tickets.FirstOrDefaultAsync(t => t.Id == id).Result;
+            
+            if(ticket is null)
+                throw new Exception("Ticket does not exist.");
+
+            _db.Tickets.Remove(ticket);
+            _db.SaveChanges();
         }
 
 
         public bool Exists(long id)
         {
-            using(var db = new CustomerSupportContext())
-            {
-                return db.Tickets.Any(t => t.Id == id);
-            } 
+            return _db.Tickets.Any(t => t.Id == id);
         }
 
 
         public GetTicketDto Get(long id)
         {
-            using(var db = new CustomerSupportContext())
+            return _db.Tickets.Select(t => new GetTicketDto
             {
-                return db.Tickets.Select(t => new GetTicketDto
-                {
-                    Id = t.Id,
-                    ProjectId = t.ProjectId,
-                    Project = t.Project.Description,
-                    AssigneeId = t.AssigneeId,
-                    Assignee = t.Assignee.Fullname,
-                    IssueId = t.IssueId,
-                    Issue = t.Issue.Description,
-                    PriorityId = t.PriorityId,
-                    Priority = t.Priority.Description,
-                    Reporter = t.Reporter,
-                    DueDate = t.DueDate.ToShortDateString(),
-                    Description = t.Description,
-                    Summary = t.Summary,
-                    OriginalEstimate = t.OriginalEstimate
-                }).FirstOrDefault(t => t.Id == id);
-            }
+                Id = t.Id,
+                ProjectId = t.ProjectId,
+                Project = t.Project.Description,
+                AssigneeId = t.AssigneeId,
+                Assignee = t.Assignee.Fullname,
+                IssueId = t.IssueId,
+                Issue = t.Issue.Description,
+                PriorityId = t.PriorityId,
+                Priority = t.Priority.Description,
+                Reporter = t.Reporter,
+                DueDate = t.DueDate.ToShortDateString(),
+                Description = t.Description,
+                Summary = t.Summary,
+                OriginalEstimate = t.OriginalEstimate
+            }).FirstOrDefault(t => t.Id == id);
         }
 
         public List<GetTicketDto> GetAll()
         {
-            using(var db = new CustomerSupportContext())
+            return _db.Tickets.Select(t => new GetTicketDto
             {
-                return db.Tickets.Select(t => new GetTicketDto
-                {
-                    Id = t.Id,
-                    ProjectId = t.ProjectId,
-                    Project = t.Project.Description,
-                    AssigneeId = t.AssigneeId,
-                    Assignee = t.Assignee.Fullname,
-                    IssueId = t.IssueId,
-                    Issue = t.Issue.Description,
-                    PriorityId = t.PriorityId,
-                    Priority = t.Priority.Description,
-                    Reporter = t.Reporter,
-                    DueDate = t.DueDate.ToShortDateString(),
-                    Description = t.Description,
-                    Summary = t.Summary,
-                    OriginalEstimate = t.OriginalEstimate
-                }).ToList();
-            }
+                Id = t.Id,
+                ProjectId = t.ProjectId,
+                Project = t.Project.Description,
+                AssigneeId = t.AssigneeId,
+                Assignee = t.Assignee.Fullname,
+                IssueId = t.IssueId,
+                Issue = t.Issue.Description,
+                PriorityId = t.PriorityId,
+                Priority = t.Priority.Description,
+                Reporter = t.Reporter,
+                DueDate = t.DueDate.ToShortDateString(),
+                Description = t.Description,
+                Summary = t.Summary,
+                OriginalEstimate = t.OriginalEstimate
+            }).ToList();
         }
 
         public void Update(UpdateTicketDto ticketDto)
         {
-            ITicket ticket = new BusinessLogic.Ticket(ticketDto);
+            ITicket ticket = new BusinessLogic.Ticket(ticketDto, _db);
             ticket.Upate();
         }
     }

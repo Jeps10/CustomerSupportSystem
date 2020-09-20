@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using CustomerSupport.Core.Services;
+using CustomerSupport.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CustomerSupport.WebApi
 {
@@ -34,6 +36,9 @@ namespace CustomerSupport.WebApi
             services.AddScoped<IAssigneeService, AssigneeService>();
             services.AddScoped<IPriorityService, PriorityService>();
             services.AddScoped<IIssueService, IssueService>();
+
+            services.AddDbContext<CustomerSupportContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("CS")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

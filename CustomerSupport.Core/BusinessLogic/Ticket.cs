@@ -29,7 +29,9 @@ namespace CustomerSupport.Core.BusinessLogic
 
         private protected readonly string _originalEst;
 
-        public Ticket(BaseTicketDto ticket) 
+        private protected readonly CustomerSupportContext _db;
+
+        public Ticket(BaseTicketDto ticket, CustomerSupportContext db) 
         {
             this._projectId = ticket.ProjectId;
             this._issueId = ticket.IssueId;
@@ -41,9 +43,10 @@ namespace CustomerSupport.Core.BusinessLogic
             this._priorityId = ticket.PriorityId;
             this._originalEst = ticket.OriginalEstimate;
             this._type = ticket.Type;
+            this._db = db;
         }
 
-        public Ticket(UpdateTicketDto ticket) 
+        public Ticket(UpdateTicketDto ticket, CustomerSupportContext db) 
         {
             this._id = ticket.Id;
             this._projectId = ticket.ProjectId;
@@ -56,65 +59,46 @@ namespace CustomerSupport.Core.BusinessLogic
             this._priorityId = ticket.PriorityId;
             this._originalEst = ticket.OriginalEstimate;
             this._type = ticket.Type;
+            this._db = db;
         }
 
         public void Create()
         {
-            using(var db = new CustomerSupportContext())
-            {
-                var ticket = new CustomerSupport.EntityFramework.Entities.Ticket();
-                
-                ticket.AssigneeId = _assigneeId;
-                ticket.Description = _description;
-                ticket.DueDate = _dueDate;
-                ticket.OriginalEstimate = _originalEst;
-                ticket.PriorityId = _priorityId;
-                ticket.ProjectId = _projectId;
-                ticket.Reporter = _reporter;
-                ticket.Summary = _summary;
-                ticket.Type = _type;
-                ticket.IssueId = _issueId;
+            var ticket = new CustomerSupport.EntityFramework.Entities.Ticket();
+            
+            ticket.AssigneeId = _assigneeId;
+            ticket.Description = _description;
+            ticket.DueDate = _dueDate;
+            ticket.OriginalEstimate = _originalEst;
+            ticket.PriorityId = _priorityId;
+            ticket.ProjectId = _projectId;
+            ticket.Reporter = _reporter;
+            ticket.Summary = _summary;
+            ticket.Type = _type;
+            ticket.IssueId = _issueId;
 
-                db.Tickets.Add(ticket);
-                db.SaveChanges();
+            _db.Tickets.Add(ticket);
+            _db.SaveChanges();
 
-                _id = ticket.Id;
-            }
-        }
-
-        public static void Delete(long id)
-        {
-            using(var db = new CustomerSupportContext())
-            {
-                var ticket = db.Tickets.FirstOrDefaultAsync(t => t.Id == id).Result;
-                
-                if(ticket is null)
-                    throw new Exception("Ticket does not exist.");
-
-                db.Tickets.Remove(ticket);
-                db.SaveChanges();
-            }
+            _id = ticket.Id;
         }
 
         public void Upate()
         {
-            using(var db = new CustomerSupportContext())
-            {
-                var ticket = db.Tickets.FirstOrDefaultAsync(t => t.Id == _id).Result;
-                
-                ticket.AssigneeId = _assigneeId;
-                ticket.Description = _description;
-                ticket.DueDate = _dueDate;
-                ticket.OriginalEstimate = _originalEst;
-                ticket.PriorityId = _priorityId;
-                ticket.ProjectId = _projectId;
-                ticket.Reporter = _reporter;
-                ticket.Summary = _summary;
-                ticket.IssueId = _issueId;
-                ticket.Type = _type;
+            var ticket = _db.Tickets.FirstOrDefaultAsync(t => t.Id == _id).Result;
+            
+            ticket.AssigneeId = _assigneeId;
+            ticket.Description = _description;
+            ticket.DueDate = _dueDate;
+            ticket.OriginalEstimate = _originalEst;
+            ticket.PriorityId = _priorityId;
+            ticket.ProjectId = _projectId;
+            ticket.Reporter = _reporter;
+            ticket.Summary = _summary;
+            ticket.IssueId = _issueId;
+            ticket.Type = _type;
 
-                db.SaveChanges();
-            }
+            _db.SaveChanges();
         }
     }
 }

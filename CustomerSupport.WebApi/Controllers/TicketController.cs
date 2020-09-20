@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using CustomerSupport.Core.Services;
 using CustomerSupport.Core.Models;
+using CustomerSupport.EntityFramework.Entities;
 
 namespace CustomerSupport.WebApi.Controllers
 {
@@ -16,9 +17,12 @@ namespace CustomerSupport.WebApi.Controllers
     {
         private readonly ITicketService _ticketService;
 
-        public TicketController(ITicketService ticketService)
+        private readonly CustomerSupportContext _db;
+
+        public TicketController(ITicketService ticketService, CustomerSupportContext db)
         {
            _ticketService = ticketService;
+            _db = db;
         }
 
         [HttpGet]
@@ -37,7 +41,7 @@ namespace CustomerSupport.WebApi.Controllers
         [HttpPost]
         public Task<IActionResult> Create(CreateTicketDto request)
         {
-            var errors = request.GetValidationErrors();
+            var errors = request.GetValidationErrors(_db);
 
             if(errors.Any()) {
                 return Task.FromResult<IActionResult>(BadRequest(errors));
@@ -50,7 +54,7 @@ namespace CustomerSupport.WebApi.Controllers
         [HttpPut]
         public Task<IActionResult> Update(UpdateTicketDto request)
         {
-            var errors = request.GetValidationErrors();
+            var errors = request.GetValidationErrors(_db);
 
             if(errors.Any()) {
                 return Task.FromResult<IActionResult>(BadRequest(errors));

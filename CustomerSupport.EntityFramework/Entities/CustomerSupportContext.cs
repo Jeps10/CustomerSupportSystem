@@ -15,10 +15,17 @@ namespace CustomerSupport.EntityFramework.Entities
 
         public DbSet<Assignee> Assignees { get; set; }
         
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(
-                @"Server=localhost; Database=CustomerSupport; User=sa; Password=V@l3nc1@");
-        }
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
+        //     if (!optionsBuilder.IsConfigured)
+        //     {
+        //     }
+        // }
+
+
+
+        public CustomerSupportContext(DbContextOptions<CustomerSupportContext> options)
+            : base(options)
+        { }
     }
 }

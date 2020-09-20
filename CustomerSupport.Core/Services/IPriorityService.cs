@@ -13,16 +13,17 @@ namespace CustomerSupport.Core.Services
 
     public class PriorityService : IPriorityService
     {
+        private readonly CustomerSupportContext _db;
+        
+        public PriorityService(CustomerSupportContext db) => _db = db;
+
         public async Task<List<BaseEntityDto>> GetAll()
         {
-            using(var db = new CustomerSupportContext())
+            return await _db.Priorities.Select(p => new BaseEntityDto
             {
-                return await db.Priorities.Select(p => new BaseEntityDto
-                {
-                    Id = p.Id,
-                    Description = p.Description
-                }).ToListAsync();
-            }
+                Id = p.Id,
+                Description = p.Description
+            }).ToListAsync();
         }
     }
 }

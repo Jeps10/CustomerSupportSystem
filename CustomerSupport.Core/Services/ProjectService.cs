@@ -13,16 +13,17 @@ namespace CustomerSupport.Core.Services
 
     public class ProjectService : IProjectService
     {
+        private readonly CustomerSupportContext _db;
+        
+        public ProjectService(CustomerSupportContext db) => _db = db;
+
         public async Task<List<BaseEntityDto>> GetAll()
         {
-            using(var db = new CustomerSupportContext())
+            return await _db.Projects.Select(p => new BaseEntityDto
             {
-                return await db.Projects.Select(p => new BaseEntityDto
-                {
-                    Id = p.Id,
-                    Description = p.Description
-                }).ToListAsync();
-            }
+                Id = p.Id,
+                Description = p.Description
+            }).ToListAsync();
         }
     }
 }

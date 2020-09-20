@@ -13,16 +13,17 @@ namespace CustomerSupport.Core.Services
 
     public class IssueService : IIssueService
     {
+        private readonly CustomerSupportContext _db;
+        
+        public IssueService(CustomerSupportContext db) => _db = db;
+
         public async Task<List<BaseEntityDto>> GetAll()
         {
-            using(var db = new CustomerSupportContext())
+            return await _db.Issues.Select(p => new BaseEntityDto
             {
-                return await db.Issues.Select(p => new BaseEntityDto
-                {
-                    Id = p.Id,
-                    Description = p.Description
-                }).ToListAsync();
-            }
+                Id = p.Id,
+                Description = p.Description
+            }).ToListAsync();
         }
     }
 }
