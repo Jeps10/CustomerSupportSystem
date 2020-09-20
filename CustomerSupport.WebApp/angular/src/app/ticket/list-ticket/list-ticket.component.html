@@ -1,0 +1,81 @@
+<ul class="nav" style="padding-bottom: 10px;">
+    <li class="nav-item">
+        <button class="btn btn-xs btn-success" (click)="create()">
+            <i class="fa fa-ticket" aria-hidden="true"></i>
+            Create Ticket
+        </button>
+    </li>
+  </ul>
+<p-table #dt [value]="tickets" dataKey="id" styleClass="p-datatable-tickets" [rowHover]="true"
+    [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading"
+    [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [filterDelay]="0" [globalFilterFields]="['summary', 'description', 'reporter']">
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            List of Tickets
+            <span class="p-input-icon-left">
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" cla placeholder="Global Search" />
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="description">Desc <p-sortIcon field="description"></p-sortIcon></th>
+            <th pSortableColumn="summary">Summary <p-sortIcon field="type"></p-sortIcon></th>
+            <th pSortableColumn="reporter">Reporter <p-sortIcon field="type"></p-sortIcon></th>
+            <th pSortableColumn="priorityId">Priority <p-sortIcon field="priorityId"></p-sortIcon></th>
+            <th pSortableColumn="projectId">Project <p-sortIcon field="projectId"></p-sortIcon></th>
+            <th pSortableColumn="issueId">Issue <p-sortIcon field="issueId"></p-sortIcon></th>
+            <th pSortableColumn="assigneeId">Assignee <p-sortIcon field="assigneeId"></p-sortIcon></th>
+            <th pSortableColumn="dueDate">Due Date <p-sortIcon field="dueDate"></p-sortIcon></th>
+            <th pSortableColumn="originalEstimate">Estimate <p-sortIcon field="originalEstimate"></p-sortIcon></th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-ticket>
+        <tr class="p-selectable-row">
+            <td>
+                {{ticket.description}}
+            </td>
+            <td>
+                {{ticket.summary}}
+            </td>
+            <td>
+                {{ticket.reporter}}
+            </td>
+            <td>
+                {{ticket.priority}}
+            </td>
+            <td>
+                {{ticket.project}}
+            </td>
+            <td>
+                {{ticket.issue}}
+            </td>
+            <td>
+                {{ticket.assignee}}
+            </td>
+            <td>
+                {{ticket.dueDate}}
+            </td>
+            <td>
+                {{ticket.originalEstimate}}
+            </td>
+            <td>
+                <button (click)="edit(ticket.id)" class="btn btn-xs btn-primary" style="margin-right: 10px">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    Edit
+                </button>
+                <button (click)="delete(ticket.id)" class="btn btn-xs btn-danger">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    Delete
+                </button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="10" style="text-align: center;">No ticket found.</td>
+        </tr>
+    </ng-template>
+</p-table>

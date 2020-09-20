@@ -1,0 +1,70 @@
+<h5 style="padding-bottom: 10px">New Ticket</h5>
+<div class="row">
+    <div class="col-sm-6">
+        <form [formGroup]="formGroup" (ngSubmit)="save()">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Project</label>
+                <select class="form-control" formControlName="ProjectId">
+                    <option value=0>Select a Project</option>
+                    <option *ngFor="let project of projects" [value]="project.id">{{project.description}}</option>
+                </select>
+                <small class="form-text text-muted" *ngIf="errors['ProjectId']">{{ errors['ProjectId'] }}</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Type</label>
+                <select class="form-control" formControlName="TypeId">
+                    <option value=0>Select a Type</option>
+                    <option *ngFor="let issue of issues" [value]="issue.id">{{issue.description}}</option>
+                </select>
+                <small class="form-text text-muted" *ngIf="errors['IssueId']">{{ errors['IssueId'] }}</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Priority</label>
+                <select class="form-control" formControlName="PriorityId">
+                    <option value=0>Select a Priority</option>
+                    <option *ngFor="let priority of priorities" [value]="priority.id">{{priority.description}}</option>
+                </select>
+                <small class="form-text text-muted" *ngIf="errors['PriorityId']">{{ errors['PriorityId'] }}</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Assignee</label>
+                <select class="form-control" formControlName="AssigneeId">
+                    <option value=0>Select an Assignee</option>
+                    <option *ngFor="let assignee of assignees" [value]="assignee.id">{{assignee.description}}</option>
+                </select>
+                <small class="form-text text-muted" *ngIf="errors['AssigneeId']">{{ errors['AssigneeId'] }}</small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Description</label>
+              <input type="text" class="form-control" formControlName="Description" aria-describedby="emailHelp">
+              <small class="form-text text-muted" *ngIf="errors['Description']">{{ errors['Description'] }}</small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Summary</label>
+              <textarea rows="3" class="form-control" formControlName="Summary"></textarea>
+              <small class="form-text text-muted" *ngIf="errors['Summary']">{{ errors['Summary'] }}</small>
+            </div>
+            <div class="form-group">
+                <label for="DueDate">Due Date</label>
+                <input type="text" class="form-control" formControlName="DueDate" aria-describedby="emailHelp">
+                <small class="form-text text-muted" *ngIf="errors['DueDate']">{{ errors['DueDate'] }}</small>
+              </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Reporter</label>
+                <input type="text" class="form-control" formControlName="Reporter" aria-describedby="emailHelp">
+                <small class="form-text text-muted" *ngIf="errors['Reporter']">{{ errors['Reporter'] }}</small>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Original Estimate</label>
+                <select class="form-control" formControlName="OriginalEstimate">
+                    <option value="">Select an estimate</option>
+                    <option value="1 Day">1 Day</option>
+                    <option value="1 Week">1 Week</option>
+                    <option value="1 Month">1 Month</option>
+                </select>
+                <small class="form-text text-muted" *ngIf="errors['OriginalEstimate']">{{ errors['OriginalEstimate'] }}</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
